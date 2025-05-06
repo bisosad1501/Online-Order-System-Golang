@@ -193,6 +193,4 @@ Khi một bước trong quy trình thất bại, hệ thống thực hiện các
 
 ## Tác giả
 
-- Lê Đức Thắng - B21DCDT205
-- Nguyễn Đức Tài - B21DCDT199
-- Nguyễn Vũ Duy Anh- B21DCVT004
+[Lê Đức Thắng](https://github.com/bisosad1501)
