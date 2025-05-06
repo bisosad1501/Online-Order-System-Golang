@@ -1,0 +1,112 @@
+http:
+  middlewares:
+    # Rate limiting middleware - 100 requests per second as per design
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 50
+
+    # JWT authentication middleware
+    jwt-auth:
+      forwardAuth:
+        address: "http://user-service:8086/auth/validate"
+        authResponseHeaders:
+          - "X-User-ID"
+          - "X-User-Role"
+        trustForwardHeader: true
+
+  routers:
+    order-router:
+      rule: "PathPrefix(`/orders`)"
+      service: order-service
+      middlewares:
+        - rate-limit
+
+    inventory-router:
+      rule: "PathPrefix(`/products`) || PathPrefix(`/inventory`)"
+      service: inventory-service
+      middlewares:
+        - rate-limit
+
+    recommendation-router:
+      rule: "PathPrefix(`/recommendations`)"
+      service: inventory-service
+      middlewares:
+        - rate-limit
+
+    payment-router:
+      rule: "PathPrefix(`/payments`)"
+      service: payment-service
+      middlewares:
+        - rate-limit
+
+    shipping-router:
+      rule: "PathPrefix(`/shipments`)"
+      service: shipping-service
+      middlewares:
+        - rate-limit
+
+    notification-router:
+      rule: "PathPrefix(`/notifications`)"
+      service: notification-service
+      middlewares:
+        - rate-limit
+
+    user-router:
+      rule: "PathPrefix(`/users`)"
+      service: user-service
+      middlewares:
+        - rate-limit
+
+    # Public auth endpoints don't need JWT auth
+    auth-router:
+      rule: "PathPrefix(`/auth`)"
+      service: user-service
+      middlewares:
+        - rate-limit
+
+    cart-router:
+      rule: "PathPrefix(`/carts`)"
+      service: cart-service
+      middlewares:
+        - rate-limit
+
+
+
+  services:
+    order-service:
+      loadBalancer:
+        servers:
+          - url: "http://order-service:8081"
+
+    inventory-service:
+      loadBalancer:
+        servers:
+          - url: "http://inventory-service:8082"
+
+    payment-service:
+      loadBalancer:
+        servers:
+          - url: "http://payment-service:8083"
+
+    shipping-service:
+      loadBalancer:
+        servers:
+          - url: "http://shipping-service:8084"
+
+    notification-service:
+      loadBalancer:
+        servers:
+          - url: "http://notification-service:8085"
+
+    user-service:
+      loadBalancer:
+        servers:
+          - url: "http://user-service:8086"
+
+    cart-service:
+      loadBalancer:
+        servers:
+          - url: "http://cart-service:8087"
+
+

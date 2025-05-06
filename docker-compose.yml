@@ -1,0 +1,366 @@
+services:
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:9090
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - gateway
+    networks:
+      - app-network
+
+  # API Gateway
+  gateway:
+    build: ./gateway
+    ports:
+      - "9090:8000"
+    depends_on:
+      - order-service
+      - inventory-service
+      - payment-service
+      - shipping-service
+      - notification-service
+      - user-service
+      - cart-service
+    networks:
+      - app-network
+
+# Swagger UI service removed
+
+  # Order Service
+  order-service:
+    build: ./services/order-service
+    ports:
+      - "${ORDER_SERVICE_PORT}:${ORDER_SERVICE_PORT}"
+    environment:
+      - PORT=${ORDER_SERVICE_PORT}
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${ORDER_DB_USER}
+      - DB_PASSWORD=${ORDER_DB_PASSWORD}
+      - DB_NAME=${ORDER_DB_NAME}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_TOPIC=${KAFKA_TOPIC_ORDERS}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - INVENTORY_SERVICE_URL=${INVENTORY_SERVICE_URL}
+      - PAYMENT_SERVICE_URL=${PAYMENT_SERVICE_URL}
+      - SHIPPING_SERVICE_URL=${SHIPPING_SERVICE_URL}
+      - USER_SERVICE_URL=${USER_SERVICE_URL}
+      - CART_SERVICE_URL=${CART_SERVICE_URL}
+      - NOTIFICATION_SERVICE_URL=${NOTIFICATION_SERVICE_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      notification-service:
+        condition: service_started
+    networks:
+      - app-network
+
+  # Inventory Service
+  inventory-service:
+    build: ./services/inventory-service
+    ports:
+      - "${INVENTORY_SERVICE_PORT}:${INVENTORY_SERVICE_PORT}"
+    environment:
+      - PORT=${INVENTORY_SERVICE_PORT}
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${INVENTORY_DB_USER}
+      - DB_PASSWORD=${INVENTORY_DB_PASSWORD}
+      - DB_NAME=${INVENTORY_DB_NAME}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_TOPIC=${KAFKA_TOPIC_ORDERS}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=
+      - REDIS_DB=1
+      - REDIS_CACHE_TTL=3600
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - app-network
+
+  # Payment Service
+  payment-service:
+    build: ./services/payment-service
+    ports:
+      - "${PAYMENT_SERVICE_PORT}:${PAYMENT_SERVICE_PORT}"
+    environment:
+      - PORT=${PAYMENT_SERVICE_PORT}
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${PAYMENT_DB_USER}
+      - DB_PASSWORD=${PAYMENT_DB_PASSWORD}
+      - DB_NAME=${PAYMENT_DB_NAME}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_TOPIC=${KAFKA_TOPIC_PAYMENTS}
+      # Stripe configuration
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - PAYMENT_MODE=${PAYMENT_MODE}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Shipping Service
+  shipping-service:
+    build: ./services/shipping-service
+    ports:
+      - "${SHIPPING_SERVICE_PORT}:${SHIPPING_SERVICE_PORT}"
+    environment:
+      - PORT=${SHIPPING_SERVICE_PORT}
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${SHIPPING_DB_USER}
+      - DB_PASSWORD=${SHIPPING_DB_PASSWORD}
+      - DB_NAME=${SHIPPING_DB_NAME}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_TOPIC=${KAFKA_TOPIC_SHIPMENTS}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=
+      - REDIS_DB=2
+      - REDIS_CACHE_TTL=3600
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - app-network
+
+  # Notification Service
+  notification-service:
+    build: ./services/notification-service
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
+    environment:
+      - PORT=${NOTIFICATION_SERVICE_PORT}
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${NOTIFICATION_DB_USER}
+      - DB_PASSWORD=${NOTIFICATION_DB_PASSWORD}
+      - DB_NAME=${NOTIFICATION_DB_NAME}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_TOPIC=${KAFKA_TOPIC_ORDERS}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=user@example.com
+      - SMTP_PASSWORD=password
+      - SMTP_FROM=noreply@example.com
+      - ORDER_SERVICE_URL=${ORDER_SERVICE_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # User Service
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    environment:
+      - PORT=${USER_SERVICE_PORT}
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${USER_DB_USER}
+      - DB_PASSWORD=${USER_DB_PASSWORD}
+      - DB_NAME=${USER_DB_NAME}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_TOPIC=${KAFKA_TOPIC_ORDERS}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Cart Service
+  cart-service:
+    build: ./services/cart-service
+    ports:
+      - "${CART_SERVICE_PORT}:${CART_SERVICE_PORT}"
+    environment:
+      - PORT=${CART_SERVICE_PORT}
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${CART_DB_USER}
+      - DB_PASSWORD=${CART_DB_PASSWORD}
+      - DB_NAME=${CART_DB_NAME}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_TOPIC=${KAFKA_TOPIC_ORDERS}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=
+      - REDIS_DB=0
+      - REDIS_CACHE_TTL=3600
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - app-network
+
+
+
+  # Centralized PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # Service to initialize the database
+  postgres-init:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      bash -c "
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"DO \\\$\\\$ BEGIN CREATE USER ${CART_DB_USER} WITH PASSWORD '${CART_DB_PASSWORD}'; EXCEPTION WHEN duplicate_object THEN RAISE NOTICE 'User already exists'; END \\\$\\\$;\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"DO \\\$\\\$ BEGIN CREATE USER ${INVENTORY_DB_USER} WITH PASSWORD '${INVENTORY_DB_PASSWORD}'; EXCEPTION WHEN duplicate_object THEN RAISE NOTICE 'User already exists'; END \\\$\\\$;\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"DO \\\$\\\$ BEGIN CREATE USER ${NOTIFICATION_DB_USER} WITH PASSWORD '${NOTIFICATION_DB_PASSWORD}'; EXCEPTION WHEN duplicate_object THEN RAISE NOTICE 'User already exists'; END \\\$\\\$;\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"DO \\\$\\\$ BEGIN CREATE USER ${ORDER_DB_USER} WITH PASSWORD '${ORDER_DB_PASSWORD}'; EXCEPTION WHEN duplicate_object THEN RAISE NOTICE 'User already exists'; END \\\$\\\$;\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"DO \\\$\\\$ BEGIN CREATE USER ${PAYMENT_DB_USER} WITH PASSWORD '${PAYMENT_DB_PASSWORD}'; EXCEPTION WHEN duplicate_object THEN RAISE NOTICE 'User already exists'; END \\\$\\\$;\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"DO \\\$\\\$ BEGIN CREATE USER ${SHIPPING_DB_USER} WITH PASSWORD '${SHIPPING_DB_PASSWORD}'; EXCEPTION WHEN duplicate_object THEN RAISE NOTICE 'User already exists'; END \\\$\\\$;\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"DO \\\$\\\$ BEGIN CREATE USER ${USER_DB_USER} WITH PASSWORD '${USER_DB_PASSWORD}'; EXCEPTION WHEN duplicate_object THEN RAISE NOTICE 'User already exists'; END \\\$\\\$;\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"CREATE DATABASE ${CART_DB_NAME};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"CREATE DATABASE ${INVENTORY_DB_NAME};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"CREATE DATABASE ${NOTIFICATION_DB_NAME};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"CREATE DATABASE ${ORDER_DB_NAME};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"CREATE DATABASE ${PAYMENT_DB_NAME};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"CREATE DATABASE ${SHIPPING_DB_NAME};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=0 --username ${POSTGRES_USER} --host postgres -c \"CREATE DATABASE ${USER_DB_NAME};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=1 --username ${POSTGRES_USER} --host postgres -c \"GRANT ALL PRIVILEGES ON DATABASE ${CART_DB_NAME} TO ${CART_DB_USER};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=1 --username ${POSTGRES_USER} --host postgres -c \"GRANT ALL PRIVILEGES ON DATABASE ${INVENTORY_DB_NAME} TO ${INVENTORY_DB_USER};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=1 --username ${POSTGRES_USER} --host postgres -c \"GRANT ALL PRIVILEGES ON DATABASE ${NOTIFICATION_DB_NAME} TO ${NOTIFICATION_DB_USER};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=1 --username ${POSTGRES_USER} --host postgres -c \"GRANT ALL PRIVILEGES ON DATABASE ${ORDER_DB_NAME} TO ${ORDER_DB_USER};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=1 --username ${POSTGRES_USER} --host postgres -c \"GRANT ALL PRIVILEGES ON DATABASE ${PAYMENT_DB_NAME} TO ${PAYMENT_DB_USER};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=1 --username ${POSTGRES_USER} --host postgres -c \"GRANT ALL PRIVILEGES ON DATABASE ${SHIPPING_DB_NAME} TO ${SHIPPING_DB_USER};\" &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -v ON_ERROR_STOP=1 --username ${POSTGRES_USER} --host postgres -c \"GRANT ALL PRIVILEGES ON DATABASE ${USER_DB_NAME} TO ${USER_DB_USER};\"
+      "
+    networks:
+      - app-network
+
+  # Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+      ZOOKEEPER_TICK_TIME: ${ZOOKEEPER_TICK_TIME}
+    networks:
+      - app-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
+      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER_CONNECT}
+      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+      KAFKA_INTER_BROKER_LISTENER_NAME: ${KAFKA_INTER_BROKER_LISTENER_NAME}
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "${KAFKA_UI_PORT}:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: ${KAFKA_CLUSTERS_0_NAME}
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS}
+      KAFKA_CLUSTERS_0_ZOOKEEPER: ${KAFKA_CLUSTERS_0_ZOOKEEPER}
+    networks:
+      - app-network
+
+  # Redis for caching
+  redis:
+    image: redis:alpine
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:

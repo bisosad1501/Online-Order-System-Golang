@@ -1,0 +1,1145 @@
+{
+  "info": {
+    "name": "Online Order System Demo - 14 Bước",
+    "description": "Collection of API endpoints for demo in the Online Order System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "0. API Hỗ Trợ Test",
+      "item": [
+        {
+          "name": "Quản lý Sản Phẩm",
+          "item": [
+            {
+              "name": "Lấy danh sách sản phẩm",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/products",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "products"
+                  ]
+                },
+                "description": "Lấy danh sách tất cả sản phẩm trong hệ thống"
+              }
+            },
+            {
+              "name": "Lấy thông tin sản phẩm theo ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/products/5042ef51-b088-47ab-a924-39b19b7fe92e",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "products",
+                    "5042ef51-b088-47ab-a924-39b19b7fe92e"
+                  ]
+                },
+                "description": "Lấy thông tin chi tiết của một sản phẩm theo ID"
+              }
+            },
+            {
+              "name": "Lấy danh sách sản phẩm theo danh mục",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/products/category/electronics",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "products",
+                    "category",
+                    "electronics"
+                  ]
+                },
+                "description": "Lấy danh sách sản phẩm theo danh mục"
+              }
+            },
+            {
+              "name": "Tạo sản phẩm mới",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Sản phẩm test mới\",\n  \"description\": \"Mô tả sản phẩm test\",\n  \"category_id\": \"electronics\",\n  \"price\": 99.99,\n  \"quantity\": 50,\n  \"tags\": [\"test\", \"new\"]\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:9090/products",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "products"
+                  ]
+                },
+                "description": "Tạo sản phẩm mới với số lượng tồn kho ban đầu"
+              }
+            },
+            {
+              "name": "Cập nhật thông tin sản phẩm",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Sản phẩm đã cập nhật\",\n  \"description\": \"Mô tả đã cập nhật\",\n  \"price\": 89.99\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:9090/products/{{product_id}}",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "products",
+                    "{{product_id}}"
+                  ]
+                },
+                "description": "Cập nhật thông tin sản phẩm"
+              }
+            },
+            {
+              "name": "Cập nhật số lượng tồn kho",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quantity\": 100\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:9090/inventory/{{product_id}}",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "inventory",
+                    "{{product_id}}"
+                  ]
+                },
+                "description": "Cập nhật số lượng tồn kho của sản phẩm"
+              }
+            },
+            {
+              "name": "Lấy thông tin tồn kho",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/inventory/{{product_id}}",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "inventory",
+                    "{{product_id}}"
+                  ]
+                },
+                "description": "Lấy thông tin tồn kho của sản phẩm"
+              }
+            }
+          ],
+          "description": "API để quản lý sản phẩm và tồn kho"
+        },
+        {
+          "name": "Quản lý Người Dùng",
+          "item": [
+            {
+              "name": "Lấy danh sách người dùng",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/users",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "users"
+                  ]
+                },
+                "description": "Lấy danh sách tất cả người dùng trong hệ thống"
+              }
+            },
+            {
+              "name": "Lấy thông tin người dùng theo ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/users/7f8e86df-f631-463f-905a-88176da81994",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "users",
+                    "7f8e86df-f631-463f-905a-88176da81994"
+                  ]
+                },
+                "description": "Lấy thông tin chi tiết của một người dùng theo ID"
+              }
+            },
+            {
+              "name": "Tạo người dùng mới",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"first_name\": \"New\",\n  \"last_name\": \"User\",\n  \"phone\": \"0987654321\",\n  \"address\": \"123 New Street, City, Country\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:9090/users",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "users"
+                  ]
+                },
+                "description": "Tạo người dùng mới trong hệ thống"
+              }
+            }
+          ],
+          "description": "API để quản lý người dùng"
+        },
+        {
+          "name": "Quản lý Đơn Hàng",
+          "item": [
+            {
+              "name": "Lấy danh sách đơn hàng",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/orders",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "orders"
+                  ]
+                },
+                "description": "Lấy danh sách tất cả đơn hàng trong hệ thống"
+              }
+            },
+            {
+              "name": "Lấy đơn hàng theo người dùng",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/users/7f8e86df-f631-463f-905a-88176da81994/orders",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "users",
+                    "7f8e86df-f631-463f-905a-88176da81994",
+                    "orders"
+                  ]
+                },
+                "description": "Lấy danh sách đơn hàng của một người dùng cụ thể"
+              }
+            },
+            {
+              "name": "Hủy đơn hàng",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Khách hàng yêu cầu hủy đơn hàng\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:9090/orders/{{order_id}}/cancel",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "orders",
+                    "{{order_id}}",
+                    "cancel"
+                  ]
+                },
+                "description": "Hủy đơn hàng theo ID"
+              }
+            }
+          ],
+          "description": "API để quản lý đơn hàng"
+        },
+        {
+          "name": "Kiểm Tra Hệ Thống",
+          "item": [
+            {
+              "name": "Kiểm tra sức khỏe API Gateway",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:9090/health",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "health"
+                  ]
+                },
+                "description": "Kiểm tra trạng thái hoạt động của API Gateway"
+              }
+            },
+            {
+              "name": "Kiểm tra sức khỏe Order Service",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/health",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "health"
+                  ]
+                },
+                "description": "Kiểm tra trạng thái hoạt động của Order Service"
+              }
+            },
+            {
+              "name": "Kiểm tra sức khỏe Inventory Service",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8082/health",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8082",
+                  "path": [
+                    "health"
+                  ]
+                },
+                "description": "Kiểm tra trạng thái hoạt động của Inventory Service"
+              }
+            },
+            {
+              "name": "Kiểm tra sức khỏe Payment Service",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8083/health",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "health"
+                  ]
+                },
+                "description": "Kiểm tra trạng thái hoạt động của Payment Service"
+              }
+            },
+            {
+              "name": "Kiểm tra sức khỏe Shipping Service",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8084/health",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8084",
+                  "path": [
+                    "health"
+                  ]
+                },
+                "description": "Kiểm tra trạng thái hoạt động của Shipping Service"
+              }
+            },
+            {
+              "name": "Kiểm tra sức khỏe Notification Service",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8085/health",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8085",
+                  "path": [
+                    "health"
+                  ]
+                },
+                "description": "Kiểm tra trạng thái hoạt động của Notification Service"
+              }
+            }
+          ],
+          "description": "API để kiểm tra trạng thái hoạt động của các service"
+        }
+      ],
+      "description": "Các API hỗ trợ để test hệ thống"
+    },
+    {
+      "name": "Bước 1: Khách hàng đặt hàng và thêm vào giỏ hàng",
+      "item": [
+        {
+          "name": "Tạo giỏ hàng mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"7f8e86df-f631-463f-905a-88176da81994\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9090/carts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "carts"
+              ]
+            },
+            "description": "Tạo giỏ hàng mới cho khách hàng"
+          }
+        },
+        {
+          "name": "Thêm sản phẩm vào giỏ hàng",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": \"5042ef51-b088-47ab-a924-39b19b7fe92e\",\n  \"quantity\": 2,\n  \"price\": 10.99\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9090/carts/{{cart_id}}/items",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "carts",
+                "{{cart_id}}",
+                "items"
+              ]
+            },
+            "description": "Thêm sản phẩm vào giỏ hàng"
+          }
+        },
+        {
+          "name": "Lấy thông tin giỏ hàng",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/carts/{{cart_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "carts",
+                "{{cart_id}}"
+              ]
+            },
+            "description": "Lấy thông tin giỏ hàng theo ID"
+          }
+        }
+      ],
+      "description": "Bước 1: Khách hàng đặt hàng và thêm vào giỏ hàng (cart-service)"
+    },
+    {
+      "name": "Bước 2: Khách hàng xác nhận đơn hàng và nhập thông tin giao hàng",
+      "item": [
+        {
+          "name": "Xác thực thông tin người dùng",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"7f8e86df-f631-463f-905a-88176da81994\",\n  \"email\": \"test@example.com\",\n  \"address\": \"123 Test St\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9090/users/verify",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "users",
+                "verify"
+              ]
+            },
+            "description": "Xác thực thông tin người dùng"
+          }
+        },
+        {
+          "name": "Tạo đơn hàng mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"7f8e86df-f631-463f-905a-88176da81994\",\n  \"items\": [\n    {\n      \"product_id\": \"5042ef51-b088-47ab-a924-39b19b7fe92e\",\n      \"quantity\": 2,\n      \"price\": 10.99\n    }\n  ],\n  \"shipping_address\": \"123 Test St\",\n  \"payment_method\": \"card\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9090/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "orders"
+              ]
+            },
+            "description": "Tạo đơn hàng mới"
+          }
+        }
+      ],
+      "description": "Bước 2: Khách hàng xác nhận đơn hàng và nhập thông tin giao hàng (user-service, order-service)"
+    },
+    {
+      "name": "Bước 3: Hệ thống kiểm tra tồn kho",
+      "item": [
+        {
+          "name": "Kiểm tra tồn kho",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"product_id\": \"5042ef51-b088-47ab-a924-39b19b7fe92e\",\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9090/inventory/check",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "inventory",
+                "check"
+              ]
+            },
+            "description": "Kiểm tra tồn kho"
+          }
+        },
+        {
+          "name": "Lấy thông tin sản phẩm",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/products/5042ef51-b088-47ab-a924-39b19b7fe92e",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "products",
+                "5042ef51-b088-47ab-a924-39b19b7fe92e"
+              ]
+            },
+            "description": "Lấy thông tin sản phẩm để kiểm tra số lượng tồn kho"
+          }
+        }
+      ],
+      "description": "Bước 3: Hệ thống kiểm tra tồn kho (inventory-service)"
+    },
+    {
+      "name": "Bước 4: Hệ thống đề xuất sản phẩm thay thế (nếu hết hàng)",
+      "item": [
+        {
+          "name": "Lấy gợi ý sản phẩm tương tự",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/recommendations/product/5042ef51-b088-47ab-a924-39b19b7fe92e",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "recommendations",
+                "product",
+                "5042ef51-b088-47ab-a924-39b19b7fe92e"
+              ]
+            },
+            "description": "Lấy gợi ý sản phẩm tương tự nếu sản phẩm hết hàng"
+          }
+        }
+      ],
+      "description": "Bước 4: Hệ thống đề xuất sản phẩm thay thế nếu hết hàng (inventory-service)"
+    },
+    {
+      "name": "Bước 5: Hệ thống khóa tồn kho",
+      "item": [
+        {
+          "name": "Kiểm tra trạng thái đơn hàng sau khi tạo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/orders/{{order_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "orders",
+                "{{order_id}}"
+              ]
+            },
+            "description": "Kiểm tra trạng thái đơn hàng để xác nhận tồn kho đã được khóa"
+          }
+        }
+      ],
+      "description": "Bước 5: Hệ thống khóa tồn kho (inventory-service, order-service)"
+    },
+    {
+      "name": "Bước 6: Hệ thống tạo yêu cầu thanh toán",
+      "item": [
+        {
+          "name": "Lấy thông tin thanh toán theo order ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/payments/order/{{order_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "payments",
+                "order",
+                "{{order_id}}"
+              ]
+            },
+            "description": "Lấy thông tin thanh toán theo order ID (gọi trực tiếp đến payment-service)"
+          }
+        }
+      ],
+      "description": "Bước 6: Hệ thống tạo yêu cầu thanh toán (payment-service)"
+    },
+    {
+      "name": "Bước 7: Khách hàng thanh toán",
+      "item": [
+        {
+          "name": "Xác nhận thanh toán với Stripe (thất bại)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"card_number\": \"4000000000000341\",\n  \"expiry_month\": \"12\",\n  \"expiry_year\": \"2025\",\n  \"cvv\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/payments/{{payment_id}}/confirm",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "payments",
+                "{{payment_id}}",
+                "confirm"
+              ]
+            },
+            "description": "Xác nhận thanh toán với Stripe (gọi trực tiếp đến payment-service) - Sử dụng thẻ test thất bại 4000000000000341"
+          }
+        },
+        {
+          "name": "Xác nhận thanh toán với Stripe (thành công)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SUCCESSFUL\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/payments/{{payment_id}}/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "payments",
+                "{{payment_id}}",
+                "status"
+              ]
+            },
+            "description": "Giả lập thanh toán thành công bằng cách cập nhật trạng thái thanh toán trực tiếp"
+          }
+        },
+        {
+          "name": "Lấy thông tin thanh toán",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/payments/{{payment_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "payments",
+                "{{payment_id}}"
+              ]
+            },
+            "description": "Lấy thông tin thanh toán sau khi xác nhận"
+          }
+        }
+      ],
+      "description": "Bước 7: Khách hàng thanh toán (payment-service)"
+    },
+    {
+      "name": "Bước 8: Hệ thống xác nhận đơn hàng",
+      "item": [
+        {
+          "name": "Lấy thông tin đơn hàng",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/orders/{{order_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "orders",
+                "{{order_id}}"
+              ]
+            },
+            "description": "Lấy thông tin đơn hàng (gọi trực tiếp đến order-service)"
+          }
+        },
+        {
+          "name": "Lấy thông báo xác nhận đơn hàng",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8085/notifications/user/7f8e86df-f631-463f-905a-88176da81994",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8085",
+              "path": [
+                "notifications",
+                "user",
+                "7f8e86df-f631-463f-905a-88176da81994"
+              ]
+            },
+            "description": "Lấy thông báo xác nhận đơn hàng cho người dùng (gọi trực tiếp đến notification-service)"
+          }
+        }
+      ],
+      "description": "Bước 8: Hệ thống xác nhận đơn hàng (order-service, notification-service)"
+    },
+    {
+      "name": "Bước 9: Hệ thống lên lịch giao hàng",
+      "item": [
+        {
+          "name": "Tạo lô hàng mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": \"{{order_id}}\",\n  \"shipping_address\": \"123 Test St\",\n  \"carrier\": \"Standard Shipping\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9090/shipments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "shipments"
+              ]
+            },
+            "description": "Tạo lô hàng mới"
+          }
+        }
+      ],
+      "description": "Bước 9: Hệ thống lên lịch giao hàng (shipping-service)"
+    },
+    {
+      "name": "Bước 10: Hệ thống tạo đơn giao hàng",
+      "item": [
+        {
+          "name": "Lấy thông tin lô hàng",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/shipments/{{shipment_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "shipments",
+                "{{shipment_id}}"
+              ]
+            },
+            "description": "Lấy thông tin lô hàng"
+          }
+        },
+        {
+          "name": "Lấy thông tin lô hàng theo order ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/shipments/order/{{order_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "shipments",
+                "order",
+                "{{order_id}}"
+              ]
+            },
+            "description": "Lấy thông tin lô hàng theo order ID"
+          }
+        }
+      ],
+      "description": "Bước 10: Hệ thống tạo đơn giao hàng (shipping-service)"
+    },
+    {
+      "name": "Bước 11: Cập nhật trạng thái giao hàng - Đang giao",
+      "item": [
+        {
+          "name": "Cập nhật trạng thái lô hàng thành IN_TRANSIT",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_TRANSIT\",\n  \"description\": \"Shipment is in transit\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9090/shipments/{{shipment_id}}/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "shipments",
+                "{{shipment_id}}",
+                "status"
+              ]
+            },
+            "description": "Cập nhật trạng thái lô hàng thành IN_TRANSIT"
+          }
+        },
+        {
+          "name": "Lấy thông báo cập nhật trạng thái giao hàng",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/notifications/user/7f8e86df-f631-463f-905a-88176da81994",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "notifications",
+                "user",
+                "7f8e86df-f631-463f-905a-88176da81994"
+              ]
+            },
+            "description": "Lấy thông báo cập nhật trạng thái giao hàng"
+          }
+        }
+      ],
+      "description": "Bước 11: Cập nhật trạng thái giao hàng - Đang giao (shipping-service, notification-service)"
+    },
+    {
+      "name": "Bước 12: Cập nhật trạng thái giao hàng - Đã giao",
+      "item": [
+        {
+          "name": "Cập nhật trạng thái lô hàng thành DELIVERED",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DELIVERED\",\n  \"description\": \"Shipment has been delivered\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9090/shipments/{{shipment_id}}/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "shipments",
+                "{{shipment_id}}",
+                "status"
+              ]
+            },
+            "description": "Cập nhật trạng thái lô hàng thành DELIVERED"
+          }
+        },
+        {
+          "name": "Lấy thông báo giao hàng thành công",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/notifications/user/7f8e86df-f631-463f-905a-88176da81994",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "notifications",
+                "user",
+                "7f8e86df-f631-463f-905a-88176da81994"
+              ]
+            },
+            "description": "Lấy thông báo giao hàng thành công"
+          }
+        }
+      ],
+      "description": "Bước 12: Cập nhật trạng thái giao hàng - Đã giao (shipping-service, notification-service)"
+    },
+    {
+      "name": "Bước 13: Hệ thống cập nhật trạng thái đơn hàng thành DELIVERED",
+      "item": [
+        {
+          "name": "Lấy thông tin đơn hàng đã hoàn tất",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/orders/{{order_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "orders",
+                "{{order_id}}"
+              ]
+            },
+            "description": "Lấy thông tin đơn hàng đã hoàn tất"
+          }
+        }
+      ],
+      "description": "Bước 13: Hệ thống cập nhật trạng thái đơn hàng thành DELIVERED (order-service)"
+    },
+    {
+      "name": "Bước 14: Hệ thống hoàn tất đơn hàng",
+      "item": [
+        {
+          "name": "Lấy thông báo hoàn tất đơn hàng",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9090/notifications/user/7f8e86df-f631-463f-905a-88176da81994",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9090",
+              "path": [
+                "notifications",
+                "user",
+                "7f8e86df-f631-463f-905a-88176da81994"
+              ]
+            },
+            "description": "Lấy thông báo hoàn tất đơn hàng"
+          }
+        }
+      ],
+      "description": "Bước 14: Hệ thống hoàn tất đơn hàng (notification-service)"
+    }
+  ],
+  "variable": [
+    {
+      "key": "cart_id",
+      "value": ""
+    },
+    {
+      "key": "order_id",
+      "value": ""
+    },
+    {
+      "key": "payment_id",
+      "value": ""
+    },
+    {
+      "key": "shipment_id",
+      "value": ""
+    },
+    {
+      "key": "product_id",
+      "value": "5042ef51-b088-47ab-a924-39b19b7fe92e"
+    },
+    {
+      "key": "user_id",
+      "value": "7f8e86df-f631-463f-905a-88176da81994"
+    }
+  ]
+}

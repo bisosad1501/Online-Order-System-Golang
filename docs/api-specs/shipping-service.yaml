@@ -1,0 +1,238 @@
+openapi: 3.0.0
+info:
+  title: Shipping Service API
+  description: API for managing shipments in the online order processing system
+  version: 1.0.0
+servers:
+  - url: http://localhost:8084
+    description: Local development server
+paths:
+  /shipments:
+    get:
+      summary: Get all shipments
+      description: Returns a list of all shipments
+      parameters:
+        - name: order_id
+          in: query
+          description: Filter shipments by order ID
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter shipments by status
+          required: false
+          schema:
+            type: string
+            enum: [PENDING, PROCESSING, IN_TRANSIT, DELIVERED, FAILED]
+      responses:
+        '200':
+          description: A list of shipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shipment'
+    post:
+      summary: Create a new shipment
+      description: Creates a new shipment with the provided information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShipmentRequest'
+      responses:
+        '201':
+          description: Shipment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /shipments/{id}:
+    get:
+      summary: Get shipment by ID
+      description: Returns a single shipment by ID
+      parameters:
+        - name: id
+          in: path
+          description: Shipment ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shipment found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+        '404':
+          description: Shipment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /shipments/{id}/status:
+    put:
+      summary: Update shipment status
+      description: Updates the status of a shipment
+      parameters:
+        - name: id
+          in: path
+          description: Shipment ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [PENDING, PROCESSING, IN_TRANSIT, DELIVERED, FAILED]
+                description:
+                  type: string
+                  description: Description of the status update
+              required:
+                - status
+      responses:
+        '200':
+          description: Shipment status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+        '404':
+          description: Shipment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /shipments/{id}/tracking:
+    get:
+      summary: Get tracking information
+      description: Returns tracking information for a shipment
+      parameters:
+        - name: id
+          in: path
+          description: Shipment ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tracking information found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingInfo'
+        '404':
+          description: Shipment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    CreateShipmentRequest:
+      type: object
+      properties:
+        order_id:
+          type: string
+          description: ID of the order to be shipped
+        shipping_address:
+          type: string
+          description: Address where the order should be shipped
+        carrier:
+          type: string
+          description: Shipping carrier to use
+      required:
+        - order_id
+        - shipping_address
+    Shipment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the shipment
+        order_id:
+          type: string
+          description: ID of the order being shipped
+        carrier:
+          type: string
+          description: Shipping carrier used
+        tracking_number:
+          type: string
+          description: Tracking number for the shipment
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, IN_TRANSIT, DELIVERED, FAILED]
+          description: Current status of the shipment
+        shipping_address:
+          type: string
+          description: Address where the order is being shipped
+        created_at:
+          type: string
+          format: date-time
+          description: Time when the shipment was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Time when the shipment was last updated
+    ShipmentUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the update
+        shipment_id:
+          type: string
+          description: ID of the shipment
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, IN_TRANSIT, DELIVERED, FAILED]
+          description: Status of the shipment
+        description:
+          type: string
+          description: Description of the update
+        created_at:
+          type: string
+          format: date-time
+          description: Time when the update was created
+    TrackingInfo:
+      type: object
+      properties:
+        shipment_id:
+          type: string
+          description: ID of the shipment
+        tracking_number:
+          type: string
+          description: Tracking number for the shipment
+        carrier:
+          type: string
+          description: Shipping carrier used
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, IN_TRANSIT, DELIVERED, FAILED]
+          description: Current status of the shipment
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipmentUpdate'
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message

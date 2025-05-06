@@ -1,0 +1,24 @@
+api:
+  insecure: true
+  dashboard: true
+
+entryPoints:
+  web:
+    address: ":8000"
+
+providers:
+  file:
+    filename: /etc/traefik/dynamic_conf.yml
+    watch: true
+
+# Enable access logs
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  format: "json"
+
+# Enable metrics for Prometheus
+metrics:
+  prometheus:
+    entryPoint: web
+    addEntryPointsLabels: true
+    addServicesLabels: true

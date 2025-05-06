@@ -1,0 +1,490 @@
+openapi: 3.0.0
+info:
+  title: Inventory Service API
+  description: API for managing products and inventory in the online order processing system
+  version: 1.0.0
+servers:
+  - url: http://localhost:8082
+    description: Local development server (internal port)
+  - url: http://localhost:9090
+    description: Local development server (mapped port)
+paths:
+  /products:
+    get:
+      summary: Get all products
+      description: Returns a list of all products
+      responses:
+        '200':
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      summary: Create a new product
+      description: Creates a new product with the provided information and initial inventory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/{id}:
+    get:
+      summary: Get product by ID
+      description: Returns a single product by ID
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update product (full update)
+      description: Updates a product with the provided information (full update)
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Update product (partial update)
+      description: Updates a product with the provided information (partial update)
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete product
+      description: Deletes a product by ID
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Product deleted successfully
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /inventory/check:
+    post:
+      summary: Check inventory
+      description: Checks if the requested products are available in the inventory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryCheckRequest'
+      responses:
+        '200':
+          description: Inventory check result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryCheckResponse'
+  /inventory/update:
+    put:
+      summary: Update inventory (deprecated)
+      description: Updates the inventory quantities for the specified products. This endpoint is deprecated, use PATCH /products/{id} instead.
+      deprecated: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryUpdateRequest'
+      responses:
+        '200':
+          description: Inventory updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryUpdateResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /inventory/{productId}:
+    get:
+      summary: Get inventory for a product
+      description: Returns the inventory information for a specific product
+      parameters:
+        - name: productId
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Inventory found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryItem'
+        '404':
+          description: Product not found in inventory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /recommendations/product/{id}:
+    get:
+      summary: Get product recommendations
+      description: Returns product recommendations based on a specific product
+      parameters:
+        - name: id
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recommendations found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /recommendations/category/{id}:
+    get:
+      summary: Get category recommendations
+      description: Returns product recommendations based on a specific category
+      parameters:
+        - name: id
+          in: path
+          description: Category ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recommendations found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /recommendations/similar:
+    post:
+      summary: Get similar products
+      description: Returns products similar to the provided products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: List of product IDs
+              required:
+                - product_ids
+      responses:
+        '200':
+          description: Similar products found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    CreateProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the product
+        description:
+          type: string
+          description: Description of the product
+        category_id:
+          type: string
+          description: ID of the product category
+        price:
+          type: number
+          format: float
+          description: Price of the product
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags associated with the product
+        quantity:
+          type: integer
+          description: Initial quantity in inventory (defaults to 0 if not provided)
+      required:
+        - name
+        - description
+        - category_id
+        - price
+
+    UpdateProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the product
+        description:
+          type: string
+          description: Description of the product
+        category_id:
+          type: string
+          description: ID of the product category
+        price:
+          type: number
+          format: float
+          description: Price of the product
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags associated with the product
+        quantity:
+          type: integer
+          description: Quantity to update in inventory
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the product
+        name:
+          type: string
+          description: Name of the product
+        description:
+          type: string
+          description: Description of the product
+        price:
+          type: number
+          format: float
+          description: Price of the product
+        created_at:
+          type: string
+          format: date-time
+          description: Time when the product was created
+    InventoryItem:
+      type: object
+      properties:
+        product_id:
+          type: string
+          description: ID of the product
+        quantity:
+          type: integer
+          description: Quantity available in inventory
+        updated_at:
+          type: string
+          format: date-time
+          description: Time when the inventory was last updated
+        product:
+          $ref: '#/components/schemas/Product'
+    InventoryCheckRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+                description: ID of the product
+              quantity:
+                type: integer
+                description: Requested quantity
+            required:
+              - product_id
+              - quantity
+      required:
+        - items
+    InventoryCheckResponse:
+      type: object
+      properties:
+        available:
+          type: boolean
+          description: Whether all requested items are available
+        unavailable_items:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+                description: ID of the product
+              product_name:
+                type: string
+                description: Name of the product
+              requested:
+                type: integer
+                description: Requested quantity
+              available:
+                type: integer
+                description: Available quantity
+    InventoryUpdateRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+                description: ID of the product
+              quantity:
+                type: integer
+                description: Quantity to update (positive for increase, negative for decrease)
+            required:
+              - product_id
+              - quantity
+      required:
+        - items
+    InventoryUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the update was successful
+        updated_items:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+                description: ID of the product
+              product_name:
+                type: string
+                description: Name of the product
+              quantity:
+                type: integer
+                description: New quantity
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message

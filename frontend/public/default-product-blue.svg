@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#EBF8FF"/>
+  
+  <!-- Product box -->
+  <rect x="100" y="100" width="200" height="200" rx="8" fill="#BEE3F8"/>
+  
+  <!-- Product icon -->
+  <path d="M200 120L260 160V240L200 280L140 240V160L200 120Z" fill="#90CDF4"/>
+  <path d="M200 120V200L260 160L200 120Z" fill="#63B3ED"/>
+  <path d="M200 120L140 160L200 200V120Z" fill="#4299E1"/>
+  <path d="M200 280V200L260 240L200 280Z" fill="#4299E1"/>
+  <path d="M200 280L140 240L200 200V280Z" fill="#63B3ED"/>
+  
+  <!-- Text label -->
+  <rect x="120" y="310" width="160" height="20" rx="4" fill="#90CDF4"/>
+  
+  <!-- Shine effect -->
+  <path d="M120 130L150 100L180 130L150 160L120 130Z" fill="white" fill-opacity="0.3"/>
+</svg>
